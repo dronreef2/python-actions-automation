@@ -1,0 +1,28 @@
+name: Gemini AI Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  gemini-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate diff summary
+        id: diff
+        run: |
+          echo '"""DIFF START"""' > diff.txt
+          git fetch origin ${{ github.base_ref }} --depth=1 || true
+          git diff --unified=0 origin/${{ github.base_ref }}...HEAD >> diff.txt
+          echo '"""DIFF END"""' >> diff.txt
+          echo "file=diff.txt" >> $GITHUB_OUTPUT
+
+      - name: (Placeholder) Gemini AI Review
+        run: |
+          echo "Integração com Gemini não implementada. Substitua este passo por chamada à API quando possuir a chave e fluxo."
