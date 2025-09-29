@@ -18,13 +18,14 @@ Este repositório oferece automações para projetos Python utilizando GitHub Ac
 
 | Workflow | Arquivo | Evento | Descrição |
 |----------|---------|--------|-----------|
-| Auto Format | `.github/workflows/autoformat.yml` | push, PR | Formata código com Black e commita se necessário |
+| Unified Formatting | `.github/workflows/format-unified.yml` | push, PR | Black + docformatter + Prettier + code blocks |
 | Lint | `.github/workflows/lint.yml` | push, PR | Executa Ruff (check + format --check) |
 | Spell Check | `.github/workflows/spellcheck.yml` | push, PR | Roda Codespell em código e nomes de arquivos |
 | Gemini AI Review | `.github/workflows/gemini.yml` | PR (opened, synchronize, reopened) | Gera diff e prepara integração futura com Gemini |
 | Tests | `.github/workflows/tests.yml` | push, PR | Executa pytest + Ruff em matrix de versões |
-| Prettier | `.github/workflows/prettier.yml` | push, PR | Formata Markdown/YAML/JSON com Prettier |
-| Docstrings | `.github/workflows/docformatter.yml` | push, PR | Normaliza docstrings com docformatter |
+| Release | `.github/workflows/release.yml` | dispatch, tag | Build e publicação PyPI/TestPyPI |
+| Prettier (LEGADO) | `.github/workflows/prettier.yml` | push, PR | (Será substituído pelo unified) |
+| Docstrings (LEGADO) | `.github/workflows/docformatter.yml` | push, PR | (Coberto pelo unified) |
 | Broken Links | `.github/workflows/links.yml` | push, PR, schedule | Verifica links em Markdown |
 | PR Summary | `.github/workflows/pr-summary.yml` | PR | Comentário de resumo automatizado |
 | AI Auto Label | `.github/workflows/ai-autolabel.yml` | PR | Sugere e aplica labels via Gemini |
