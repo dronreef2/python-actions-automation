@@ -77,5 +77,5 @@ show_missing = true
 skip_covered = true
 
 [tool.codespell]
-ignore-words-list = "crate,ser"
+ignore-words-list = "crate,ser,Formate"
 skip = ".git,.mypy_cache,.ruff_cache,build,dist"
