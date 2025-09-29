@@ -196,7 +196,7 @@ def cmd_labels(args: argparse.Namespace) -> int:
         resp = model.generate_content(prompt)
         raw = getattr(resp, "text", "")
     except Exception as e:  # pragma: no cover
-    raw = f"{{\"labels\":[]}}  /* error: {e} */"
+        raw = f"{{\"labels\":[]}}  /* error: {e} */"
     labels = _extract_labels(raw, allowed, max_labels)
     # aplica
     if labels:
@@ -264,7 +264,7 @@ def cmd_line_review(args: argparse.Namespace) -> int:
         resp = model.generate_content(prompt)
         raw = getattr(resp, "text", "")
     except Exception as e:  # pragma: no cover
-    raw = f"{{\"comments\":[]}} /* error {e} */"
+        raw = f"{{\"comments\":[]}} /* error {e} */"
     comments: List[dict] = []
     m = re.search(r"\{.*\}", raw, flags=re.DOTALL)
     if m:
