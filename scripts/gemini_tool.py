@@ -196,7 +196,7 @@ def cmd_labels(args: argparse.Namespace) -> int:
         resp = model.generate_content(prompt)
         raw = getattr(resp, "text", "")
     except Exception as e:  # pragma: no cover
-        raw = f"{{\"labels\":[]}}  /* erro: {e} */"
+    raw = f"{{\"labels\":[]}}  /* error: {e} */"
     labels = _extract_labels(raw, allowed, max_labels)
     # aplica
     if labels:
@@ -237,7 +237,7 @@ def _list_pr_files(repo: str, pr_number: int, token: str) -> List[FilePatch]:
             # ignorar arquivos muito grandes
             if len(patch) < 8000 and filename.endswith((".py", ".md")):
                 out.append(FilePatch(filename, patch))
-    return out[:20]  # limite de arquivos analisados
+    return out[:20]  # limit de arquivos analisados
 
 
 def cmd_line_review(args: argparse.Namespace) -> int:
@@ -264,7 +264,7 @@ def cmd_line_review(args: argparse.Namespace) -> int:
         resp = model.generate_content(prompt)
         raw = getattr(resp, "text", "")
     except Exception as e:  # pragma: no cover
-        raw = f"{{\"comments\":[]}} /* erro {e} */"
+    raw = f"{{\"comments\":[]}} /* error {e} */"
     comments: List[dict] = []
     m = re.search(r"\{.*\}", raw, flags=re.DOTALL)
     if m:

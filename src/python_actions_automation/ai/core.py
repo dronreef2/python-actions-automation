@@ -26,7 +26,7 @@ def _ensure_client():  # noqa: ANN201
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key or not genai:
         raise GeminiNotAvailableError(
-            "Gemini não disponível: defina GEMINI_API_KEY e instale google-generativeai"
+            "Gemini não disponível: defina GEMINI_API_KEY e install google-generativeai"
         )
     genai.configure(api_key=api_key)
     model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
@@ -63,7 +63,7 @@ class GeminiClient:
     def summary(self, diff: str, max_chars: int = 800) -> str:
         prompt = (
             (
-                f"Resuma mudanças de um Pull Request em até {max_chars} caracteres. "
+                f"Resuma mudanças de um Pull Request em até {max_chars} characters. "
                 "Formato: 1 linha de resumo + lista de bullets. Texto em Português."
             )
             + "\n\n"

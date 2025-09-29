@@ -12,7 +12,7 @@ import sys
 
 def main() -> int:  # noqa: D401
     script_path = Path(__file__).parent.parent.parent / "scripts" / "gemini_tool.py"
-    # Executa o script real repassando argumentos
+    # Executa o script real repassando arguments
     globals_dict = runpy.run_path(str(script_path))  # noqa: S102
     entry = globals_dict.get("main")
     if callable(entry):  # type: ignore

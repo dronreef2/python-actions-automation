@@ -54,7 +54,7 @@ def build_prompt(diff: str) -> str:
         "Revise o diff de um Pull Request em um projeto Python. "
         "Foque em: corretude, complexidade, legibilidade, segurança, edge cases e aderência a boas práticas. "
         "Formate a resposta em seções com markdown.\n\n"
-        "Responda em Português.\n\n"
+    "Responda em Português.\n\n"
         f"DIFF:\n{diff}\n"
     )
 
@@ -140,7 +140,7 @@ def main() -> int:
         return 0
 
     review_text = generate_review(model, prompt)
-    body = f"{COMMENT_HEADER}\n### Revisão Automática (Gemini)\n\n{review_text}\n\n---\n_Diff analisado parcialmente (limite de 20k chars)._"
+    body = f"{COMMENT_HEADER}\n### Revisão Automática (Gemini)\n\n{review_text}\n\n---\n_Diff analisado parcialmente (limit de 20k chars)._"
     existing_id = find_existing_comment(ctx)
     post_comment(ctx, body, existing_id)
     return 0

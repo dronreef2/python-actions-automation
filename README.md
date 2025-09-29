@@ -54,7 +54,7 @@ README.md
 
 ### Ambiente local (opcional)
 
-Crie e ative um ambiente virtual e instale dependências de desenvolvimento:
+Crie e active um ambiente virtual e install dependências de desenvolvimento:
 
 ```bash
 python -m venv .venv
@@ -110,7 +110,7 @@ Para usar o workflow `gemini.yml` com chamada de API própria (script em `script
 
 1. Crie um secret no repositório ou organização chamado `GEMINI_API_KEY` com sua chave da API Gemini.
 2. Abra/atualize um Pull Request.
-3. O job "Gemini AI Review" vai gerar o diff e publicar/atualizar um comentário marcado com `<!-- gemini-ai-review -->`.
+3. O job "Gemini AI Review" via gerar o diff e publicar/atualizar um comentário marcado com `<!-- gemini-ai-review -->`.
 
 Caso o secret não exista ou a lib não esteja disponível, o job finaliza sem falhar o PR.
 

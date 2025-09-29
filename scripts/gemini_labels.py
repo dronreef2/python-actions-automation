@@ -129,7 +129,7 @@ def main() -> int:
         response = model.generate_content(prompt)
         raw_text = getattr(response, "text", "")
     except Exception as e:  # pragma: no cover
-        print(f"[labels] Erro na geração: {e}")
+    print(f"[labels] Error na geração: {e}")
         return 0
 
     labels = extract_labels(raw_text, allowed, max_labels)
