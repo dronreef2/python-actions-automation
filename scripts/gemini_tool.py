@@ -92,7 +92,7 @@ def cmd_review(args: argparse.Namespace) -> int:  # noqa: D401
     pr_number = os.getenv("PR_NUMBER")
     token = os.getenv("GITHUB_TOKEN")
     diff_path = os.getenv("DIFF_FILE", "diff.txt")
-    if not (repo and pr_number and token):
+    if not (repo and pr_number and token) and not args.local:
         return 0
     diff = _read_limited(diff_path, 20000)
     model = _configure_model()
@@ -109,7 +109,10 @@ def cmd_review(args: argparse.Namespace) -> int:  # noqa: D401
     except Exception as e:  # pragma: no cover
         review_text = f"(falha geração: {e})"
     body = f"### Revisão Automática (Gemini)\n\n{review_text}\n\n—\n<sub>Diff truncado.</sub>"
-    _upsert_sticky_comment(repo, int(pr_number), token, REVIEW_HEADER, body)
+    if args.local:
+        print(body)
+    else:
+        _upsert_sticky_comment(repo, int(pr_number), token, REVIEW_HEADER, body)
     return 0
 
 
@@ -122,7 +125,7 @@ def cmd_summary(args: argparse.Namespace) -> int:
     pr_number = os.getenv("PR_NUMBER")
     token = os.getenv("GITHUB_TOKEN")
     diff_path = os.getenv("DIFF_FILE", "diff.txt")
-    if not (repo and pr_number and token):
+    if not (repo and pr_number and token) and not args.local:
         return 0
     diff = _read_limited(diff_path, 25000)
     model = _configure_model()
@@ -140,7 +143,10 @@ def cmd_summary(args: argparse.Namespace) -> int:
         except Exception as e:  # pragma: no cover
             summary = f"(Falha ao gerar resumo: {e})"
     body = f"{summary}\n\n<sub>Gerado automaticamente.</sub>"
-    _upsert_sticky_comment(repo, int(pr_number), token, SUMMARY_HEADER, body)
+    if args.local:
+        print(body)
+    else:
+        _upsert_sticky_comment(repo, int(pr_number), token, SUMMARY_HEADER, body)
     return 0
 
 
@@ -182,7 +188,7 @@ def cmd_labels(args: argparse.Namespace) -> int:
     diff_path = os.getenv("DIFF_FILE", "diff.txt")
     allowed = _parse_allowed()
     max_labels = int(os.getenv("MAX_LABELS", "3"))
-    if not (repo and pr_number and token and allowed):
+    if not (repo and pr_number and token and allowed) and not args.local:
         return 0
     diff = _read_limited(diff_path, 15000)
     model = _configure_model()
@@ -200,7 +206,7 @@ def cmd_labels(args: argparse.Namespace) -> int:
         raw = f'{{"labels":[]}}  /* error: {e} */'
     labels = _extract_labels(raw, allowed, max_labels)
     # aplica
-    if labels:
+    if labels and not args.local:
         url = f"https://api.github.com/repos/{repo}/issues/{pr_number}/labels"
         requests.post(
             url,
@@ -209,7 +215,10 @@ def cmd_labels(args: argparse.Namespace) -> int:
             timeout=30,
         )
     comment_body = f"Labels sugeridas/aplicadas: {', '.join(labels) if labels else '(nenhuma)'}"
-    _upsert_sticky_comment(repo, int(pr_number), token, LABELS_HEADER, comment_body)
+    if args.local:
+        print(comment_body)
+    else:
+        _upsert_sticky_comment(repo, int(pr_number), token, LABELS_HEADER, comment_body)
     return 0
 
 
@@ -245,7 +254,7 @@ def cmd_line_review(args: argparse.Namespace) -> int:
     repo = os.getenv("REPO_FULL") or os.getenv("GITHUB_REPOSITORY")
     pr_number = os.getenv("PR_NUMBER")
     token = os.getenv("GITHUB_TOKEN")
-    if not (repo and pr_number and token):
+    if not (repo and pr_number and token) and not args.local:
         return 0
     model = _configure_model()
     if not model:
@@ -292,21 +301,35 @@ def cmd_line_review(args: argparse.Namespace) -> int:
         except Exception:  # pragma: no cover
             pass
     # Cria pull request review se houver comentários
-    if comments:
-        review_url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}/reviews"
-        payload = {"event": "COMMENT", "body": "Revisão linha a linha (Beta)", "comments": comments}
-        requests.post(
-            review_url, headers=_github_headers(token), data=json.dumps(payload), timeout=30
-        )
+    if args.local:
+        if comments:
+            print("Comentários linha a linha:")
+            for c in comments:
+                print(f"- {c['path']}:{c['line']}: {c['body']}")
+        else:
+            print(
+                "Nenhum comentário linha a linha gerado (pode ser mudança trivial ou parsing falhou)."
+            )
     else:
-        # fallback: comentário único informando ausência
-        _upsert_sticky_comment(
-            repo,
-            int(pr_number),
-            token,
-            LINE_REVIEW_TAG,
-            "Nenhum comentário linha a linha gerado (pode ser mudança trivial ou parsing falhou).",
-        )
+        if comments:
+            review_url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}/reviews"
+            payload = {
+                "event": "COMMENT",
+                "body": "Revisão linha a linha (Beta)",
+                "comments": comments,
+            }
+            requests.post(
+                review_url, headers=_github_headers(token), data=json.dumps(payload), timeout=30
+            )
+        else:
+            # fallback: comentário único informando ausência
+            _upsert_sticky_comment(
+                repo,
+                int(pr_number),
+                token,
+                LINE_REVIEW_TAG,
+                "Nenhum comentário linha a linha gerado (pode ser mudança trivial ou parsing falhou).",
+            )
     return 0
 
 
@@ -315,6 +338,9 @@ def cmd_line_review(args: argparse.Namespace) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser("gemini-tool", description="Ferramentas AI para PRs")
+    p.add_argument(
+        "--local", action="store_true", help="Modo local: imprime saída em vez de postar no GitHub"
+    )
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("review")
     sub.add_parser("summary")
