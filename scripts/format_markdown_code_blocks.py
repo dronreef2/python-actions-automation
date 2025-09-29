@@ -4,6 +4,7 @@
 Simplificado em relação a soluções mais complexas: extrai blocos cercados por ```python ou ```bash,
 formata usando ruff (python) ou prettier (bash) e reescreve o arquivo.
 """
+
 from __future__ import annotations
 
 import re

@@ -3,6 +3,7 @@
 
 Inspirado em ideias de actions públicas, mas implementação independente.
 """
+
 from __future__ import annotations
 
 import json

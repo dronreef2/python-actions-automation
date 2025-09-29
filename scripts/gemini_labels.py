@@ -3,6 +3,7 @@
 
 Requer GEMINI_API_KEY e GITHUB_TOKEN. Só aplica labels se retornadas forem permitidas.
 """
+
 from __future__ import annotations
 
 import json

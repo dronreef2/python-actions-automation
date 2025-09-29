@@ -10,6 +10,7 @@ Fluxo:
 
 Se a chave GEMINI_API_KEY não estiver definida, o script falha silenciosamente com aviso.
 """
+
 from __future__ import annotations
 
 import json
@@ -53,7 +54,7 @@ def build_prompt(diff: str) -> str:
         "Revise o diff de um Pull Request em um projeto Python. "
         "Foque em: corretude, complexidade, legibilidade, segurança, edge cases e aderência a boas práticas. "
         "Formate a resposta em seções com markdown.\n\n"
-    "Responda em Português.\n\n"
+        "Responda em Português.\n\n"
         f"DIFF:\n{diff}\n"
     )
 

@@ -6,6 +6,7 @@ Uso:
 
 Sem --apply roda em modo somente leitura.
 """
+
 from __future__ import annotations
 
 import argparse

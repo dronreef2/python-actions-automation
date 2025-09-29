@@ -3,6 +3,7 @@
 Mantemos a implementação principal em scripts/gemini_tool.py para permitir
 execução isolada sem instalação, mas oferecemos console_script instalado.
 """
+
 from __future__ import annotations
 
 import runpy

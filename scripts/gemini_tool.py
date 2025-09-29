@@ -12,6 +12,7 @@ Todos dependem de variáveis padrão já usadas pelos workflows:
 
 Falhas de IA não derrubam o processo (retorna 0).
 """
+
 from __future__ import annotations
 
 import argparse
@@ -99,7 +100,8 @@ def cmd_review(args: argparse.Namespace) -> int:  # noqa: D401
         return 0
     prompt = (
         "Revise o diff de um Pull Request em um projeto Python. Foque em: corretude, complexidade, "
-        "legibilidade, segurança, edge cases e boas práticas. Responda em Markdown em Português.\n\n" + diff
+        "legibilidade, segurança, edge cases e boas práticas. Responda em Markdown em Português.\n\n"
+        + diff
     )
     try:
         resp = model.generate_content(prompt)
@@ -188,14 +190,14 @@ def cmd_labels(args: argparse.Namespace) -> int:
         return 0
     allow_str = ", ".join(allowed) or "(nenhuma)"
     prompt = (
-        "Você é um assistente que classifica Pull Requests. Retorne SOMENTE JSON: {\"labels\": []}. "
+        'Você é um assistente que classifica Pull Requests. Retorne SOMENTE JSON: {"labels": []}. '
         f"Máximo {max_labels}. Use apenas: {allow_str}. Sem explicações.\n\nTÍTULO: {title}\n\nCORPO:\n{body_text[:3000]}\n\nDIFF:\n{diff[:8000]}"
     )
     try:
         resp = model.generate_content(prompt)
         raw = getattr(resp, "text", "")
     except Exception as e:  # pragma: no cover
-        raw = f"{{\"labels\":[]}}  /* error: {e} */"
+        raw = f'{{"labels":[]}}  /* error: {e} */'
     labels = _extract_labels(raw, allowed, max_labels)
     # aplica
     if labels:
@@ -257,13 +259,14 @@ def cmd_line_review(args: argparse.Namespace) -> int:
     prompt = (
         "Você é um revisor de código. Para cada alteração relevante proponha zero ou mais comentários. "
         'Retorne JSON: {"comments":[{"file":"path","line":N,"body":"texto"}, ...]}. '
-        "Comentários curtos, em Português, sugerindo melhorias objetivas. Sem texto fora do JSON.\n\n" + joined
+        "Comentários curtos, em Português, sugerindo melhorias objetivas. Sem texto fora do JSON.\n\n"
+        + joined
     )
     try:
         resp = model.generate_content(prompt)
         raw = getattr(resp, "text", "")
     except Exception as e:  # pragma: no cover
-        raw = f"{{\"comments\":[]}} /* error {e} */"
+        raw = f'{{"comments":[]}} /* error {e} */'
     comments: list[dict] = []
     m = re.search(r"\{.*\}", raw, flags=re.DOTALL)
     if m:
@@ -276,12 +279,14 @@ def cmd_line_review(args: argparse.Namespace) -> int:
                     and isinstance(c.get("line"), int)
                     and isinstance(c.get("body"), str)
                 ):
-                    comments.append({
-                        "path": c["file"],
-                        "line": c["line"],
-                        "body": c["body"][:500],
-                        "side": "RIGHT",
-                    })
+                    comments.append(
+                        {
+                            "path": c["file"],
+                            "line": c["line"],
+                            "body": c["body"][:500],
+                            "side": "RIGHT",
+                        }
+                    )
                     if len(comments) >= 40:
                         break
         except Exception:  # pragma: no cover
@@ -290,7 +295,9 @@ def cmd_line_review(args: argparse.Namespace) -> int:
     if comments:
         review_url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}/reviews"
         payload = {"event": "COMMENT", "body": "Revisão linha a linha (Beta)", "comments": comments}
-        requests.post(review_url, headers=_github_headers(token), data=json.dumps(payload), timeout=30)
+        requests.post(
+            review_url, headers=_github_headers(token), data=json.dumps(payload), timeout=30
+        )
     else:
         # fallback: comentário único informando ausência
         _upsert_sticky_comment(
