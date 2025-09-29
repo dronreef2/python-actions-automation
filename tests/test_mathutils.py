@@ -1,4 +1,4 @@
-from python_actions_automation import soma, normalizar
+from python_actions_automation import normalizar, soma
 
 
 def test_soma():

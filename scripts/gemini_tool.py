@@ -20,7 +20,6 @@ import os
 import re
 import sys
 from dataclasses import dataclass
-from typing import Iterable
 
 import requests
 
@@ -46,7 +45,7 @@ def _configure_model():  # noqa: ANN201
 
 def _read_limited(path: str, limit: int) -> str:
     try:
-        with open(path, "r", encoding="utf-8", errors="ignore") as f:
+        with open(path, encoding="utf-8", errors="ignore") as f:
             return f.read()[:limit]
     except FileNotFoundError:
         return ""

@@ -5,9 +5,9 @@ execução isolada sem instalação, mas oferecemos console_script instalado.
 """
 from __future__ import annotations
 
-from pathlib import Path
 import runpy
 import sys
+from pathlib import Path
 
 
 def main() -> int:  # noqa: D401

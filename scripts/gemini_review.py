@@ -16,7 +16,6 @@ import json
 import os
 import sys
 from dataclasses import dataclass
-from typing import Optional
 
 import requests
 
@@ -43,7 +42,7 @@ class PRContext:
 
 def load_diff(path: str) -> str:
     try:
-        with open(path, "r", encoding="utf-8", errors="ignore") as f:
+        with open(path, encoding="utf-8", errors="ignore") as f:
             return f.read()[:20000]  # limita para evitar prompt gigante
     except FileNotFoundError:
         return "(diff não encontrado)"
@@ -59,7 +58,7 @@ def build_prompt(diff: str) -> str:
     )
 
 
-def configure_model() -> Optional[object]:  # noqa: ANN401
+def configure_model() -> object | None:  # noqa: ANN401
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key or not genai:
         print("[gemini] GEMINI_API_KEY ausente ou biblioteca não instalada; pulando análise.")
@@ -82,7 +81,7 @@ def generate_review(model, prompt: str) -> str:  # noqa: ANN001, ANN401
         return f"(Falha ao gerar conteúdo: {e})"
 
 
-def find_existing_comment(ctx: PRContext) -> Optional[int]:
+def find_existing_comment(ctx: PRContext) -> int | None:
     headers = {
         "Authorization": f"Bearer {ctx.github_token}",
         "Accept": "application/vnd.github+json",
@@ -97,7 +96,7 @@ def find_existing_comment(ctx: PRContext) -> Optional[int]:
     return None
 
 
-def post_comment(ctx: PRContext, body: str, update_id: Optional[int]) -> None:
+def post_comment(ctx: PRContext, body: str, update_id: int | None) -> None:
     headers = {
         "Authorization": f"Bearer {ctx.github_token}",
         "Accept": "application/vnd.github+json",

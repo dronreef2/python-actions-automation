@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import os
+from collections.abc import Iterable
+from dataclasses import dataclass
+
 """Camada interna de integração com Gemini.
 
 Uso básico:
@@ -8,9 +12,6 @@ Uso básico:
 
 Projeto evita lançar exceções fatais quando a API não está configurada.
 """
-from dataclasses import dataclass
-from typing import Iterable, List
-import os
 
 try:  # pragma: no cover - import opcional
     import google.generativeai as genai  # type: ignore
@@ -79,7 +80,7 @@ class GeminiClient:
         diff: str,
         allowed: Iterable[str],
         max_labels: int = 3,
-    ) -> List[str]:
+    ) -> list[str]:
         allow = [a.strip().lower() for a in allowed if a.strip()]
         allow_str = ", ".join(allow) or "(none)"
         prompt = (
@@ -89,7 +90,7 @@ class GeminiClient:
         )
         raw = self._call(prompt)
         # parsing simples
-        out: List[str] = []
+        out: list[str] = []
         import json, re  # noqa
 
         match = re.search(r"\{.*\}", raw, flags=re.DOTALL)

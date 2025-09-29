@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable, List
+from collections.abc import Iterable
 
 
 def soma(valores: Iterable[float]) -> float:
@@ -15,7 +15,7 @@ def soma(valores: Iterable[float]) -> float:
     return total
 
 
-def normalizar(valores: Iterable[float]) -> List[float]:
+def normalizar(valores: Iterable[float]) -> list[float]:
     """Normaliza uma sequência para que a soma seja 1.0.
 
     Retorna lista vazia se não houver valores ou se soma for zero.

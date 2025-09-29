@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+
 import requests
 
 try:  # pragma: no cover
@@ -21,7 +22,7 @@ MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
 
 def load_diff(path: str) -> str:
     try:
-        with open(path, "r", encoding="utf-8", errors="ignore") as f:
+        with open(path, encoding="utf-8", errors="ignore") as f:
             return f.read()[:25000]
     except FileNotFoundError:
         return "(diff não encontrado)"

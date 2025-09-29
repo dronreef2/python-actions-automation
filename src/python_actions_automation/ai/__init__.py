@@ -9,11 +9,11 @@ Todas usam a chave GEMINI_API_KEY se presente. Caso contrário retornam resposta
 """
 
 from .core import (
+    GeminiClient,
+    GeminiNotAvailableError,
     generate_review,
     generate_summary,
     suggest_labels,
-    GeminiClient,
-    GeminiNotAvailableError,
 )
 
 __all__ = [

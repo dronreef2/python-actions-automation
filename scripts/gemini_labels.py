@@ -9,7 +9,6 @@ import json
 import os
 import re
 import sys
-from typing import List, Set
 
 import requests
 
@@ -24,18 +23,18 @@ DEFAULT_MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
 
 def read_file(path: str) -> str:
     try:
-        with open(path, "r", encoding="utf-8", errors="ignore") as f:
+        with open(path, encoding="utf-8", errors="ignore") as f:
             return f.read()[:15000]
     except FileNotFoundError:
         return ""
 
 
-def parse_allowed() -> Set[str]:
+def parse_allowed() -> set[str]:
     raw = os.getenv("ALLOWED_LABELS", "")
     return {x.strip() for x in raw.split(",") if x.strip()}
 
 
-def build_prompt(title: str, body: str, diff: str, allowed: Set[str], max_labels: int) -> str:
+def build_prompt(title: str, body: str, diff: str, allowed: set[str], max_labels: int) -> str:
     allowed_list = ", ".join(sorted(allowed)) or "(nenhuma definida)"
     return (
         "Você é um assistente que classifica Pull Requests de um projeto Python. "
@@ -59,7 +58,7 @@ def configure_model():  # noqa: ANN201
         return None
 
 
-def extract_labels(text: str, allowed: Set[str], max_labels: int) -> List[str]:
+def extract_labels(text: str, allowed: set[str], max_labels: int) -> list[str]:
     # Tenta encontrar bloco JSON
     match = re.search(r"\{.*\}", text, flags=re.DOTALL)
     if not match:
@@ -83,7 +82,7 @@ def extract_labels(text: str, allowed: Set[str], max_labels: int) -> List[str]:
         return []
 
 
-def apply_labels(repo: str, pr_number: int, labels: List[str], token: str) -> None:
+def apply_labels(repo: str, pr_number: int, labels: list[str], token: str) -> None:
     if not labels:
         print("[labels] Nenhuma label aplicável.")
         return
@@ -96,7 +95,7 @@ def apply_labels(repo: str, pr_number: int, labels: List[str], token: str) -> No
         print(f"[labels] Labels aplicadas: {labels}")
 
 
-def comment_result(repo: str, pr_number: int, labels: List[str], token: str) -> None:
+def comment_result(repo: str, pr_number: int, labels: list[str], token: str) -> None:
     url = f"https://api.github.com/repos/{repo}/issues/{pr_number}/comments"
     headers = {"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"}
     body = f"{COMMENT_HEADER}\nLabels sugeridas/aplicadas: {', '.join(labels) if labels else '(nenhuma)'}"
