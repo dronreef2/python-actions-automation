@@ -34,7 +34,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install google-generativeai==0.8.3 requests
+          pip install -e .[ai]
 
       - name: Run AI Auto Label
         env:
@@ -49,4 +49,4 @@ jobs:
           MAX_LABELS: "3"
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
         run: |
-          python scripts/gemini_labels.py
+          gemini-tool labels

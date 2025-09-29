@@ -1,23 +1,17 @@
-name: AI PR Summary
+name: Gemini Line Review (Beta)
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
-  pr-summary:
+  gemini-line-review:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - name: Get diff
-        id: diff
-        run: |
-          git fetch origin ${{ github.base_ref }} --depth=1 || true
-          git diff --unified=0 origin/${{ github.base_ref }}...HEAD > pr_diff.txt
-          echo "file=pr_diff.txt" >> $GITHUB_OUTPUT
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -26,12 +20,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e .[ai]
-      - name: Generate summary
+      - name: Run line review (beta)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          DIFF_FILE: ${{ steps.diff.outputs.file }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO_FULL: ${{ github.repository }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gemini-tool summary
+          gemini-tool line-review
