@@ -22,7 +22,22 @@ jobs:
           git diff --unified=0 origin/${{ github.base_ref }}...HEAD >> diff.txt
           echo '"""DIFF END"""' >> diff.txt
           echo "file=diff.txt" >> $GITHUB_OUTPUT
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
 
-      - name: (Placeholder) Gemini AI Review
+      - name: Install dependencies
         run: |
-          echo "Integração com Gemini não implementada. Substitua este passo por chamada à API quando possuir a chave e fluxo."
+          python -m pip install --upgrade pip
+          pip install google-generativeai==0.8.3 requests
+
+      - name: Gemini AI Review
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO_FULL: ${{ github.repository }}
+          DIFF_FILE: ${{ steps.diff.outputs.file }}
+        run: |
+          python scripts/gemini_review.py

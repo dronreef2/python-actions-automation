@@ -50,6 +50,21 @@ ruff check .
 black .  # para formatar
 ```
 
+### Integração Gemini Code Assist
+
+Se você já instalou o GitHub App "Gemini Code Assist" (como mostra a captura), ele poderá adicionar comentários automáticos nos PRs.
+
+Para usar o workflow `gemini.yml` com chamada de API própria (script em `scripts/gemini_review.py`):
+
+1. Crie um secret no repositório ou organização chamado `GEMINI_API_KEY` com sua chave da API Gemini.
+2. Abra/atualize um Pull Request.
+3. O job "Gemini AI Review" vai gerar o diff e publicar/atualizar um comentário marcado com `<!-- gemini-ai-review -->`.
+
+Caso o secret não exista ou a lib não esteja disponível, o job finaliza sem falhar o PR.
+
+Você pode trocar o modelo definindo um secret ou variável `GEMINI_MODEL` (ex: `gemini-1.5-pro`).
+
+
 ## Próximos Passos (Sugestões)
 - Adicionar testes automatizados (pytest) e cobertura.
 - Publicar pacote (se aplicável) com workflow de release.
