@@ -7,6 +7,7 @@ Este repositório oferece automações para projetos Python utilizando GitHub Ac
 - **Lint**: Verifica estilo e possíveis erros com Ruff.
 - **Spell Check**: Verificação ortográfica com Codespell.
 - **Revisão por IA (Gemini)**: (placeholder) Estrutura pronta para integrar análise automática de PR por IA.
+- **Testes Automatizados**: Pytest em múltiplas versões de Python (3.10–3.12) com relatório de cobertura.
 
 ## Workflows
 
@@ -16,6 +17,7 @@ Este repositório oferece automações para projetos Python utilizando GitHub Ac
 | Lint | `.github/workflows/lint.yml` | push, PR | Executa Ruff (check + format --check) |
 | Spell Check | `.github/workflows/spellcheck.yml` | push, PR | Roda Codespell em código e nomes de arquivos |
 | Gemini AI Review | `.github/workflows/gemini.yml` | PR (opened, synchronize, reopened) | Gera diff e prepara integração futura com Gemini |
+| Tests | `.github/workflows/tests.yml` | push, PR | Executa pytest + Ruff em matrix de versões |
 
 ## Estrutura Inicial
 
@@ -34,6 +36,19 @@ README.md
 1. Faça um commit e `git push`.
 2. Acesse a aba **Actions** no GitHub.
 3. Verifique a execução dos workflows nos commits ou Pull Requests.
+
+### Ambiente local (opcional)
+
+Crie e ative um ambiente virtual e instale dependências de desenvolvimento:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .[dev]
+pytest -q
+ruff check .
+black .  # para formatar
+```
 
 ## Próximos Passos (Sugestões)
 - Adicionar testes automatizados (pytest) e cobertura.
