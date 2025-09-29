@@ -25,7 +25,9 @@ class GeminiNotAvailableError(RuntimeError):
 def _ensure_client():  # noqa: ANN201
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key or not genai:
-        raise GeminiNotAvailableError("Gemini não disponível: defina GEMINI_API_KEY e instale google-generativeai")
+        raise GeminiNotAvailableError(
+            "Gemini não disponível: defina GEMINI_API_KEY e instale google-generativeai"
+        )
     genai.configure(api_key=api_key)
     model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
     return genai.GenerativeModel(model_name)
@@ -53,14 +55,20 @@ class GeminiClient:
     def review(self, diff: str) -> str:
         prompt = (
             "Revise este diff de código Python. Liste: Problemas Potenciais, "
-            "Melhorias Recomendadas, Testes Sugeridos. Resposta em Markdown concisa.\n\n" + diff[:18000]
+            "Melhorias Recomendadas, Testes Sugeridos. Resposta em Markdown concisa.\n\n"
+            + diff[:18000]
         )
         return self._call(prompt)
 
     def summary(self, diff: str, max_chars: int = 800) -> str:
         prompt = (
-            f"Resuma mudanças de um Pull Request em até {max_chars} caracteres. "
-            "Formato: 1 linha de resumo + lista de bullets. Texto em Português.") + "\n\n" + diff[:12000]
+            (
+                f"Resuma mudanças de um Pull Request em até {max_chars} caracteres. "
+                "Formato: 1 linha de resumo + lista de bullets. Texto em Português."
+            )
+            + "\n\n"
+            + diff[:12000]
+        )
         text = self._call(prompt)
         return text[:max_chars]
 
@@ -75,7 +83,7 @@ class GeminiClient:
         allow = [a.strip().lower() for a in allowed if a.strip()]
         allow_str = ", ".join(allow) or "(none)"
         prompt = (
-            "Classifique o Pull Request. Retorne apenas JSON: {\"labels\": [..]}. "
+            'Classifique o Pull Request. Retorne apenas JSON: {"labels": [..]}. '
             f"Máx {max_labels} labels. Use somente: {allow_str}. Sem explicações extras.\n\n"
             f"TITLE: {title}\nBODY:\n{body[:3000]}\nDIFF:\n{diff[:8000]}"
         )

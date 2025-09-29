@@ -7,6 +7,7 @@ Exposição de funções utilitárias de alto nível:
 
 Todas usam a chave GEMINI_API_KEY se presente. Caso contrário retornam respostas neutras.
 """
+
 from .core import (
     generate_review,
     generate_summary,
