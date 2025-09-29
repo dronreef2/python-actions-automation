@@ -83,7 +83,10 @@ def generate_review(model, prompt: str) -> str:  # noqa: ANN001, ANN401
 
 
 def find_existing_comment(ctx: PRContext) -> Optional[int]:
-    headers = {"Authorization": f"Bearer {ctx.github_token}", "Accept": "application/vnd.github+json"}
+    headers = {
+        "Authorization": f"Bearer {ctx.github_token}",
+        "Accept": "application/vnd.github+json",
+    }
     r = requests.get(ctx.comments_api, headers=headers, timeout=30)
     if r.status_code != 200:
         print(f"[gemini] Não foi possível listar comentários: {r.status_code}")
@@ -95,7 +98,10 @@ def find_existing_comment(ctx: PRContext) -> Optional[int]:
 
 
 def post_comment(ctx: PRContext, body: str, update_id: Optional[int]) -> None:
-    headers = {"Authorization": f"Bearer {ctx.github_token}", "Accept": "application/vnd.github+json"}
+    headers = {
+        "Authorization": f"Bearer {ctx.github_token}",
+        "Accept": "application/vnd.github+json",
+    }
     payload = {"body": body}
     if update_id:
         url = f"https://api.github.com/repos/{ctx.repo_full}/issues/comments/{update_id}"
