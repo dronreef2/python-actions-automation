@@ -1,6 +1,6 @@
 # python-actions-automation
 
-Este repositório oferece automações para projetos Python utilizando GitHub Actions, inspirado nas melhores práticas do [ultralytics/actions](https://github.com/ultralytics/actions).
+Este repositório oferece automações para projetos Python utilizando GitHub Actions. Ele inclui workflows para formatação automática, linting, verificação ortográfica, revisão por IA (placeholder) e testes automatizados.
 
 ## Funcionalidades
 - **Auto-formatação**: Padroniza o código automaticamente com Black.
@@ -8,6 +8,10 @@ Este repositório oferece automações para projetos Python utilizando GitHub Ac
 - **Spell Check**: Verificação ortográfica com Codespell.
 - **Revisão por IA (Gemini)**: (placeholder) Estrutura pronta para integrar análise automática de PR por IA.
 - **Testes Automatizados**: Pytest em múltiplas versões de Python (3.10–3.12) com relatório de cobertura.
+ - **Prettier Config**: Formatação consistente de Markdown/YAML/JSON.
+ - **Docstrings Formatting**: Padronização automática com docformatter.
+ - **Broken Links**: Checagem de links quebrados em Markdown (Lychee).
+ - **Resumo de PR (IA)**: Geração de resumo estruturado de mudanças em PRs.
  - **Auto-Label IA**: Sugestão e aplicação automática de labels em PRs via Gemini (workflow `ai-autolabel.yml`).
 
 ## Workflows
@@ -19,6 +23,10 @@ Este repositório oferece automações para projetos Python utilizando GitHub Ac
 | Spell Check | `.github/workflows/spellcheck.yml` | push, PR | Roda Codespell em código e nomes de arquivos |
 | Gemini AI Review | `.github/workflows/gemini.yml` | PR (opened, synchronize, reopened) | Gera diff e prepara integração futura com Gemini |
 | Tests | `.github/workflows/tests.yml` | push, PR | Executa pytest + Ruff em matrix de versões |
+| Prettier | `.github/workflows/prettier.yml` | push, PR | Formata Markdown/YAML/JSON com Prettier |
+| Docstrings | `.github/workflows/docformatter.yml` | push, PR | Normaliza docstrings com docformatter |
+| Broken Links | `.github/workflows/links.yml` | push, PR, schedule | Verifica links em Markdown |
+| PR Summary | `.github/workflows/pr-summary.yml` | PR | Comentário de resumo automatizado |
 | AI Auto Label | `.github/workflows/ai-autolabel.yml` | PR | Sugere e aplica labels via Gemini |
 
 ## Estrutura Inicial

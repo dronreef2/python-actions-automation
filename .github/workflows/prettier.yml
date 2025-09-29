@@ -1,0 +1,47 @@
+name: Prettier Format
+
+on: [push, pull_request]
+
+jobs:
+  prettier:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Prettier
+        run: npm install --global prettier@3 prettier-plugin-sh@0.13.1
+      - name: Prettier Check
+        id: check
+        run: |
+          set +e
+          prettier --check "**/*.{md,yml,yaml,json}" > prettier.log 2>&1
+          status=$?
+          if [ $status -ne 0 ]; then echo "needs_formatting=true" >> $GITHUB_OUTPUT; else echo "needs_formatting=false" >> $GITHUB_OUTPUT; fi
+          exit 0
+      - name: Apply Prettier (push only)
+        if: steps.check.outputs.needs_formatting == 'true' && github.event_name == 'push'
+        run: |
+          prettier --write "**/*.{md,yml,yaml,json}"
+      - name: Commit formatted files
+        if: steps.check.outputs.needs_formatting == 'true' && github.event_name == 'push'
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .
+          git diff --cached --quiet || git commit -m "chore: aplicar Prettier"
+          git push || true
+      - name: PR Comment
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: prettier-format
+          message: |
+            ${{ steps.check.outputs.needs_formatting == 'true' && '⚠️ Prettier detectou divergências. Rode `prettier --write`.' || '✅ Arquivos Markdown/Config já estão formatados.' }}
