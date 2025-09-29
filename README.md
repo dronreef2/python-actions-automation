@@ -52,6 +52,29 @@ ruff check .
 black .  # para formatar
 ```
 
+### API Interna Gemini
+
+O pacote expõe funções internas para uso local em automações ou scripts:
+
+```python
+from python_actions_automation.ai import generate_review, generate_summary, suggest_labels
+
+diff = "...conteúdo do diff..."
+print(generate_summary(diff))
+print(generate_review(diff))
+print(suggest_labels("Fix bug", "Corrige edge case", diff, ["bug", "tests"]))
+```
+
+Para habilitar:
+```bash
+pip install -e .[ai]
+export GEMINI_API_KEY="minha_chave"
+python -c "from python_actions_automation.ai import generate_summary; print(generate_summary('diff exemplo'))"
+```
+
+Sem a variável `GEMINI_API_KEY`, as funções retornam respostas neutras e não falham.
+
+
 ### Integração Gemini Code Assist
 
 Se você já instalou o GitHub App "Gemini Code Assist" (como mostra a captura), ele poderá adicionar comentários automáticos nos PRs.
