@@ -50,6 +50,7 @@ jobs:
       - name: Run docformatter
         run: |
           docformatter --in-place --recursive --wrap-summaries 100 --wrap-descriptions 100 .
+        continue-on-error: true
       - name: Run Prettier (check)
         id: prettier
         run: |
