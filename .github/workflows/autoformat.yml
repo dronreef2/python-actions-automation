@@ -1,69 +1,14 @@
-name: Auto Format Python Code
+name: (DEPRECATED) Legacy Auto Format
 
-on: [push, pull_request]
+# Este workflow foi substituído por format-unified.yml e foi mantido apenas
+# como stub documental. Não possui gatilhos automáticos.
+on:
+  workflow_dispatch:
 
 jobs:
-  format:
+  noop:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install dependencies
+      - name: Aviso
         run: |
-          python -m pip install --upgrade pip
-          pip install black
-
-      - name: Run Black (check mode)
-        id: black_check
-        run: |
-          set -e
-          echo "Running black --check ..."
-          if black --check .; then
-            echo "needs_formatting=false" >> $GITHUB_OUTPUT
-          else
-            echo "needs_formatting=true" >> $GITHUB_OUTPUT
-          fi
-        continue-on-error: true
-
-      - name: Run Black (apply)
-        if: steps.black_check.outputs.needs_formatting == 'true'
-        run: |
-          black .
-
-      - name: Commit changes
-        if: steps.black_check.outputs.needs_formatting == 'true'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .
-          if git diff --cached --quiet; then
-            echo "No changes to commit."; exit 0; fi
-          git commit -m "chore: auto-format code with Black"
-          git push
-
-      - name: PR Comment (formatted)
-        if: steps.black_check.outputs.needs_formatting == 'true' && github.event_name == 'pull_request'
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          header: black-format
-          message: |
-            ✅ O código foi formatado automaticamente com Black e as mudanças foram enviadas.
-
-      - name: PR Comment (already formatted)
-        if: steps.black_check.outputs.needs_formatting == 'false' && github.event_name == 'pull_request'
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          header: black-format
-          message: |
-            ✅ O código já estava formatado de acordo com o Black.
+          echo "Este workflow é legado. Use .github/workflows/format-unified.yml"

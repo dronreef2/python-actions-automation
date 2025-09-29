@@ -1,46 +1,49 @@
 # python-actions-automation
 
-Este repositório oferece automações para projetos Python utilizando GitHub Actions. Ele inclui workflows para formatação automática, linting, verificação ortográfica, revisão por IA (placeholder) e testes automatizados.
+![CI Tests](https://github.com/dronreef2/python-actions-automation/actions/workflows/tests.yml/badge.svg)
+![Lint](https://github.com/dronreef2/python-actions-automation/actions/workflows/lint.yml/badge.svg)
+![Formatting](https://github.com/dronreef2/python-actions-automation/actions/workflows/format-unified.yml/badge.svg)
+![Links](https://github.com/dronreef2/python-actions-automation/actions/workflows/links.yml/badge.svg)
+![AI Review](https://github.com/dronreef2/python-actions-automation/actions/workflows/gemini.yml/badge.svg)
+
+Este repositório oferece automações avançadas para projetos Python utilizando GitHub Actions: formatação unificada, lint, spell-check, análise de links, revisão/rotulagem/sumário de PR por IA (Gemini), testes com cobertura e pipeline de release.
 
 ## Funcionalidades
-- **Auto-formatação**: Padroniza o código automaticamente com Black.
-- **Lint**: Verifica estilo e possíveis erros com Ruff.
-- **Spell Check**: Verificação ortográfica com Codespell.
-- **Revisão por IA (Gemini)**: (placeholder) Estrutura pronta para integrar análise automática de PR por IA.
-- **Testes Automatizados**: Pytest em múltiplas versões de Python (3.10–3.12) com relatório de cobertura.
- - **Prettier Config**: Formatação consistente de Markdown/YAML/JSON.
- - **Docstrings Formatting**: Padronização automática com docformatter.
- - **Broken Links**: Checagem de links quebrados em Markdown (Lychee).
- - **Resumo de PR (IA)**: Geração de resumo estruturado de mudanças em PRs.
- - **Auto-Label IA**: Sugestão e aplicação automática de labels em PRs via Gemini (workflow `ai-autolabel.yml`).
+- Formatação unificada (Black + docformatter + Prettier + normalização de blocos de código Markdown)
+- Lint estático (Ruff)
+- Verificação ortográfica (Codespell)
+- Checagem de links quebrados (Lychee)
+- Revisão de PR por IA (Gemini)
+- Sumário automatizado de PR (Gemini)
+- Auto-label inteligente (Gemini)
+- Testes em matriz Python 3.10–3.12 + cobertura (Codecov opcional)
+- Pipeline de release (semver tags + PyPI/TestPyPI)
+- Atualização de cabeçalhos de arquivos
 
 ## Workflows
 
 | Workflow | Arquivo | Evento | Descrição |
 |----------|---------|--------|-----------|
-| Unified Formatting | `.github/workflows/format-unified.yml` | push, PR | Black + docformatter + Prettier + code blocks |
-| Lint | `.github/workflows/lint.yml` | push, PR | Executa Ruff (check + format --check) |
-| Spell Check | `.github/workflows/spellcheck.yml` | push, PR | Roda Codespell em código e nomes de arquivos |
-| Gemini AI Review | `.github/workflows/gemini.yml` | PR (opened, synchronize, reopened) | Gera diff e prepara integração futura com Gemini |
-| Tests | `.github/workflows/tests.yml` | push, PR | Executa pytest + Ruff em matrix de versões |
+| Unified Formatting | `.github/workflows/format-unified.yml` | push, PR | Black + docformatter + Prettier + blocos Markdown |
+| Lint | `.github/workflows/lint.yml` | push, PR | Ruff lint/check |
+| Spell Check | `.github/workflows/spellcheck.yml` | push, PR | Codespell |
+| Gemini AI Review | `.github/workflows/gemini.yml` | PR (opened, synchronize, reopened) | Comentário de revisão automatizada |
+| PR Summary | `.github/workflows/pr-summary.yml` | PR | Gera sumário estruturado via IA |
+| AI Auto Label | `.github/workflows/ai-autolabel.yml` | PR | Sugere/aplica labels via IA |
+| Broken Links | `.github/workflows/links.yml` | push, PR, schedule | Verifica links externos |
+| Tests | `.github/workflows/tests.yml` | push, PR | Pytest + cobertura |
 | Release | `.github/workflows/release.yml` | dispatch, tag | Build e publicação PyPI/TestPyPI |
-| Prettier (LEGADO) | `.github/workflows/prettier.yml` | push, PR | (Será substituído pelo unified) |
-| Docstrings (LEGADO) | `.github/workflows/docformatter.yml` | push, PR | (Coberto pelo unified) |
-| Broken Links | `.github/workflows/links.yml` | push, PR, schedule | Verifica links em Markdown |
-| PR Summary | `.github/workflows/pr-summary.yml` | PR | Comentário de resumo automatizado |
-| AI Auto Label | `.github/workflows/ai-autolabel.yml` | PR | Sugere e aplica labels via Gemini |
 
-## Estrutura Inicial
+## Estrutura (resumida)
 
 ```text
-.github/
-	workflows/
-		autoformat.yml
-		lint.yml
-		spellcheck.yml
-		gemini.yml
+.github/workflows/*.yml   # Automação CI/CD e IA
+scripts/                  # Scripts auxiliares (Gemini, headers, markdown)
+src/python_actions_automation/  # Código fonte do pacote
+tests/                    # Testes pytest
+pyproject.toml            # Configuração e dependências
+LICENSE                   # Licença MIT
 README.md
-.gitignore
 ```
 
 ## Como usar
@@ -100,10 +103,11 @@ Você pode trocar o modelo definindo um secret ou variável `GEMINI_MODEL` (ex: 
 
 
 ## Próximos Passos (Sugestões)
-- Adicionar testes automatizados (pytest) e cobertura.
-- Publicar pacote (se aplicável) com workflow de release.
-- Integrar chamada real à API Gemini.
-- Adicionar Ruff no modo de correção automática em um job separado.
+- Consolidar scripts Gemini em um único CLI (`scripts/gemini_tool.py`).
+- Adicionar pre-commit para espelhar format-unified.
+- Adicionar testes para scripts (`update_headers.py`, `format_markdown_code_blocks.py`).
+- Automatizar CHANGELOG em releases.
+- Implementar modo "link replace" (futuro) com heurística de substituição.
 
 ## Licença
-Defina uma licença (ex: MIT, Apache-2.0) adicionando um arquivo `LICENSE`.
+Este projeto está licenciado sob os termos da licença MIT. Veja `LICENSE`.
