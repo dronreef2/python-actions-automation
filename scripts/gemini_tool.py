@@ -255,11 +255,11 @@ def cmd_line_review(args: argparse.Namespace) -> int:
     for fp in files:
         serialized.append(f"FILE: {fp.filename}\nPATCH:\n{fp.patch}\n---")
     joined = "\n".join(serialized)[:18000]
-    prompt = (
-        "Você é um revisor de código. Para cada alteração relevante proponha zero ou mais comentários. "
-        "Retorne JSON: {\"comments\":[{"file":"path","line":N,"body":"texto"}, ...]}. "
-        "Comentários curtos, em Português, sugerindo melhorias objetivas. Sem texto fora do JSON.\n\n" + joined
-    )
+        prompt = (
+            "Você é um revisor de código. Para cada alteração relevante proponha zero ou mais comentários. "
+            'Retorne JSON: {"comments":[{"file":"path","line":N,"body":"texto"}, ...]}. '
+            "Comentários curtos, em Português, sugerindo melhorias objetivas. Sem texto fora do JSON.\n\n" + joined
+        )
     try:
         resp = model.generate_content(prompt)
         raw = getattr(resp, "text", "")
