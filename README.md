@@ -8,6 +8,7 @@ Este repositório oferece automações para projetos Python utilizando GitHub Ac
 - **Spell Check**: Verificação ortográfica com Codespell.
 - **Revisão por IA (Gemini)**: (placeholder) Estrutura pronta para integrar análise automática de PR por IA.
 - **Testes Automatizados**: Pytest em múltiplas versões de Python (3.10–3.12) com relatório de cobertura.
+ - **Auto-Label IA**: Sugestão e aplicação automática de labels em PRs via Gemini (workflow `ai-autolabel.yml`).
 
 ## Workflows
 
@@ -18,6 +19,7 @@ Este repositório oferece automações para projetos Python utilizando GitHub Ac
 | Spell Check | `.github/workflows/spellcheck.yml` | push, PR | Roda Codespell em código e nomes de arquivos |
 | Gemini AI Review | `.github/workflows/gemini.yml` | PR (opened, synchronize, reopened) | Gera diff e prepara integração futura com Gemini |
 | Tests | `.github/workflows/tests.yml` | push, PR | Executa pytest + Ruff em matrix de versões |
+| AI Auto Label | `.github/workflows/ai-autolabel.yml` | PR | Sugere e aplica labels via Gemini |
 
 ## Estrutura Inicial
 
