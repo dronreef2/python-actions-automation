@@ -20,7 +20,7 @@ import os
 import re
 import sys
 from dataclasses import dataclass
-from typing import Iterable, List, Optional, Sequence
+from typing import Iterable
 
 import requests
 
@@ -56,7 +56,7 @@ def _github_headers(token: str) -> dict:
     return {"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"}
 
 
-def _list_issue_comments(repo: str, pr_number: int, token: str) -> List[dict]:
+def _list_issue_comments(repo: str, pr_number: int, token: str) -> list[dict]:
     url = f"https://api.github.com/repos/{repo}/issues/{pr_number}/comments"
     r = requests.get(url, headers=_github_headers(token), timeout=30)
     if r.status_code != 200:
@@ -69,7 +69,7 @@ def _upsert_sticky_comment(
     repo: str, pr_number: int, token: str, header_marker: str, body_markdown: str
 ) -> None:
     comments = _list_issue_comments(repo, pr_number, token)
-    existing_id: Optional[int] = None
+    existing_id: int | None = None
     for c in comments:
         if isinstance(c, dict) and str(c.get("body", "")).startswith(header_marker):
             existing_id = int(c.get("id"))
@@ -147,12 +147,12 @@ def cmd_summary(args: argparse.Namespace) -> int:
 LABELS_HEADER = "<!-- gemini-ai-labels -->"
 
 
-def _parse_allowed() -> List[str]:
+def _parse_allowed() -> list[str]:
     raw = os.getenv("ALLOWED_LABELS", "")
     return [x.strip().lower() for x in raw.split(",") if x.strip()]
 
 
-def _extract_labels(raw: str, allowed: Sequence[str], max_labels: int) -> List[str]:
+def _extract_labels(raw: str, allowed: list[str], max_labels: int) -> list[str]:
     match = re.search(r"\{.*\}", raw, flags=re.DOTALL)
     if not match:
         return []
@@ -161,7 +161,7 @@ def _extract_labels(raw: str, allowed: Sequence[str], max_labels: int) -> List[s
         labels = data.get("labels", [])
     except Exception:
         return []
-    out: List[str] = []
+    out: list[str] = []
     for item in labels:
         if isinstance(item, str):
             name = item.strip().lower()
@@ -222,12 +222,12 @@ class FilePatch:
     patch: str
 
 
-def _list_pr_files(repo: str, pr_number: int, token: str) -> List[FilePatch]:
+def _list_pr_files(repo: str, pr_number: int, token: str) -> list[FilePatch]:
     url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}/files"
     r = requests.get(url, headers=_github_headers(token), timeout=30)
     if r.status_code != 200:
         return []
-    out: List[FilePatch] = []
+    out: list[FilePatch] = []
     for item in r.json():
         if not isinstance(item, dict):
             continue
@@ -265,7 +265,7 @@ def cmd_line_review(args: argparse.Namespace) -> int:
         raw = getattr(resp, "text", "")
     except Exception as e:  # pragma: no cover
         raw = f"{{\"comments\":[]}} /* error {e} */"
-    comments: List[dict] = []
+    comments: list[dict] = []
     m = re.search(r"\{.*\}", raw, flags=re.DOTALL)
     if m:
         try:
@@ -317,7 +317,7 @@ def build_parser() -> argparse.ArgumentParser:
     return p
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     mapping = {
         "review": cmd_review,
