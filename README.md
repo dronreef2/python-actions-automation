@@ -16,6 +16,7 @@ Este repositório oferece automações avançadas para projetos Python utilizand
 - Revisão de PR por IA (Gemini)
 - Sumário automatizado de PR (Gemini)
 - Auto-label inteligente (Gemini)
+- Revisão linha a linha (Beta) via `gemini-tool line-review`
 - Testes em matriz Python 3.10–3.12 + cobertura (Codecov opcional)
 - Pipeline de release (semver tags + PyPI/TestPyPI)
 - Atualização de cabeçalhos de arquivos
@@ -85,6 +86,20 @@ python -c "from python_actions_automation.ai import generate_summary; print(gene
 ```
 
 Sem a variável `GEMINI_API_KEY`, as funções retornam respostas neutras e não falham.
+
+### CLI Unificado (`gemini-tool`)
+
+Após instalar com extras `ai`:
+
+```bash
+pip install -e .[ai]
+gemini-tool review       # comentário agregado de revisão
+gemini-tool summary      # comentário de sumário
+gemini-tool labels       # sugere/aplica labels
+gemini-tool line-review  # (beta) tenta gerar comentários linha a linha
+```
+
+O CLI lê as mesmas variáveis de ambiente usadas nos workflows (`REPO_FULL`, `PR_NUMBER`, `GITHUB_TOKEN`, etc.).
 
 
 ### Integração Gemini Code Assist
